@@ -1,7 +1,7 @@
 filename = "Project\3 Minute Beethoven, Symphony No. 5.  🎼🎶🎵.wav"; %song input (we need to change the song because it is too basic because I was going to do it for a different project.
 
 %read audio file
-[audio, fs] = audioread("3 Minute Beethoven, Symphony No. 5.  🎼🎶🎵.wav");
+[audio, fs] = audioread("Project/Songs/3 Minute Beethoven, Symphony No. 5.  🎼🎶🎵.wav");
 
 
 t = (0:length(audio)-1)/fs ;%seconds of audio file
@@ -46,18 +46,14 @@ NewBassFile = 'audio_bass.wav';
 audiowrite(NewBassFile, audio_bass, fs)
 
 
-%Adding Treble (Amplifying High Frequencies) Yall can do this. I already
-%gave yall the function.
+%Adding Treble (Amplifying High Frequencies) 
 audio_treble = highpass(audio,2000,fs,'Steepness',0.85,'StopbandAttenuation',60);
-%Skibidi toilet will be mine yeah ohio town yeah diamonds to mine I'm on
-%the big sigma grind yeah worried about imposters i am way to sus yeah ohio
-%rizz yeah
 
 %Power Spectrum of Treble Boosted Audio
 [pt,ft] = pspectrum(audio_treble,fs);
 
 %Cover Power to dB
-pt_dB = pow2db(pt)
+pt_dB = pow2db(pt);
 
 %Graph 
 figure;
@@ -73,8 +69,22 @@ hold off
 NewTrebleFile = 'audio_treble.wav';
 audiowrite(NewTrebleFile, audio_treble, fs)
 
-%Midrange frequencies (watesigma is even that)
-
+%Midrange frequencies 
+audio_mid = bandpass(audio,[6000 12000],fs,'Steepness',0.85,'StopbandAttenuation',60);
+[gluc,pp] = pspectrum(audio_mid,fs);
+gluc_dB = pow2db(gluc);
+figure;
+plot(f, p_dB, "Color", 'r', "DisplayName",'Original' );  
+hold on
+plot(pp, gluc_dB,"Color", "g", "DisplayName", 'Mid-Range Boost')
+legend show;
+grid on;
+xlabel('Frequency (Hz)');
+ylabel('Power Spectrum (dB)');
+title('Power Spectrum of Audio Signal');
+hold off
+NewMidFile = 'audio_mid.wav';
+audiowrite(NewMidFile, audio_mid, fs)
 
 plot(f, p_dB, "Color", 'r', "DisplayName",'Original' );  
 hold on
@@ -87,5 +97,3 @@ ylabel('Power Spectrum (dB)');
 title('Power Spectrum of Audio Signal - with Bass');
 hold off
 
-%Play the music
-audioplayer('audio_bass.wav', 1)
